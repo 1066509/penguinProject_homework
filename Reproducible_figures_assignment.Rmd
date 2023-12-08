@@ -7,7 +7,7 @@ output:
 date: "2023-10-09"
 ---
 
-```{r}
+```{r echo=FALSE, include=FALSE}
 #install.packages("tinytex")
 library(tinytex)
 ```
@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 *To create a PDF, first install tinytex and load the package. Then press the Knit arrow and select "Knit to PDF".*
 
 
-### Load all packages for the script (output hidden)
+### Load all packages for both questions (output hidden)
 
 ```{r echo=FALSE, include=FALSE}
 # Load packages
@@ -450,13 +450,21 @@ chinstrap penguin] https://animaldiversity.org/accounts/Pygoscelis_antarcticus/#
 
 *GitHub link:*
 
+https://github.com/1066509/penguinProject_homework.git
+
 *You will be marked on your repo organisation and readability.*
+
+
 
 ### b) Share your repo with a partner, download, and try to run their data pipeline.
 
 *Partner's GitHub link:*
 
+https://github.com/lb23092/Reproducible_figures_R.git
+
 *You **must** provide this so I can verify there is no plagiarism between you and your partner.*
+
+
 
 ### c) Reflect on your experience running their code. (300-500 words)
 
@@ -468,8 +476,29 @@ chinstrap penguin] https://animaldiversity.org/accounts/Pygoscelis_antarcticus/#
 
 -   *If you needed to alter your partner's figure using their code, do you think that would be easy or difficult, and why?*
 
+Feedback for my partner's code:
+
+My partner clearly explained each step in detail, making the pipeline very easy to follow throughout. This included explaining why they were going to do each step, and also clearly explaining conclusions drawn from the data. The code in each chunk is also laid out clearly, with each object and function described by human understandable names and laid out in snake case. All required packages had lines of code to install them, meaning each step of the code ran, if you removed the hashtags and ran these lines. If there had been a mistake, it would have been easy to trace it back due to the format of the names used and the fact that the clean and raw has been stored. 
+
+To make the code more understandable, it might have been useful to include a line of code that runs the clean data object: penguins_clean_Q2 in line 168. This could be the head() function or names(), in order to see the changes which have been made to the dataset upon cleaning. A couple of the object names within the statistical methods section could also have been shortened to make the code more readable. Although they clearly explain what the object is showing, the explanation ahead of the code is able to do this alone, and making the object names shorter might have made it easier to interpret the lines of code.
+
+In terms of whether I need to alter my partner’s figure, it might have been useful for them to apply different colours within the graphs they have plotted, to make sure the colours can also be seen and interpreted by those who are colour blind. I believe it would be easy to make this change to the figure, as they have already made clear which functions are for graph plotting. The line of code to change the colours could be made to be a function in itself, which could then be used in both the graph plotting functions. This makes it easier to trace back any mistakes to a single line of code, rather than having it repeated over multiple functions.
+
+To make the code more reproducible, it might have helped to have if/else statements for installation of the packages. This means that these lines of code can be run through and it doesn’t involve user effort of removing hashtags from the names of the packages they don’t have. Without removing these hashtags, users will not be able to install the packages, and therefore some packages may not be installed for them.
+
+
+
 ### d) Reflect on your own code based on your experience with your partner's code and their review of yours. (300-500 words)
 
 -   *What improvements did they suggest, and do you agree?*
 
 -   *What did you learn about writing code for other people?*
+
+
+My partner has suggested that slightly more annotations in some places may have helped users to interpret the methods which I have used. I do agree that this is important, to understand the changes which will have been made to the output. When I applied the statistical tests, for example, if I had explained what each step was doing in more detail, it may have made it more readable. I could have explained further why I have used each graph for testing the ANCOVA assumptions, and what we would expect to see if the graph supported our assumptions. Furthermore, I agree that using an increased number of annotations in my ‘plotting_homework.R’ file would have made the file more understandable to a user wanting to replicate my code with their own data set. I hadn’t originally done this, since I had thought that many of lines would be explanatory in themselves, but adding extra lines of annotations would have enhanced replicability. This does show me the importance of being as clear as possible in the methods I am carrying out because for different users, there may be different levels of experience with the standard functions in these packages being used. Therefore, being explicit in my annotations will aid users in replicating my code.
+
+To limit any potential mistakes in my code, it would have been useful, as my partner has suggested, to create an increased number of functions for plotting my graphs, including functions for colour, labelling and titles. This means that there would only be one reference point to look back to, and this would make it easier for users looking to reproduce my code if there had been an error; they would also be able to more easily signpost where the error was made.
+
+Throughout this process of analysing the data set, I have learnt the importance of making it clear as to what you are doing and why, in the sense of both code annotations and making clear object/function names. To make data both understandable and reproducible, the lines of code need to be explicit in the methods they are doing and the data or columns/rows they are referring to, so it is easy to follow through. I have also learnt that it helps to print the output of a function applied, as this also makes following the analysis steps more intuitive. Finally, I have learnt the importance of piping and keeping code in custom functions, in order to make it easy for users to refer back to. When looking over an R document, having human understandable functions which condense the coding used make the analysis steps, again, more simple to follow, and also means any mistakes can be identified and altered much more quickly. This enhances reproducibility and makes the code more understandable.
+
+
