@@ -1,0 +1,475 @@
+---
+title: "Reproducible figures assignment"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+date: "2023-10-09"
+---
+
+```{r}
+#install.packages("tinytex")
+library(tinytex)
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+*The following is a template .rmd RMarkdown file for you to use for your homework submission.*
+*Please Knit your .rmd to a PDF format or HTML and submit that with no identifiers like your name.*
+*To create a PDF, first install tinytex and load the package. Then press the Knit arrow and select "Knit to PDF".*
+
+
+### Load all packages for the script (output hidden)
+
+```{r echo=FALSE, include=FALSE}
+# Load packages
+if (!require("ggplot2", character.only = TRUE)) {
+  install.packages("ggplot2")
+  library("ggplot2")
+} else {
+  library("ggplot2")
+}
+
+if (!require("palmerpenguins", character.only = TRUE)) {
+  install.packages("palmerpenguins")
+  library("palmerpenguins")
+} else {
+  library("palmerpenguins")
+}
+
+if (!require("janitor", character.only = TRUE)) {
+  install.packages("janitor")
+  library("janitor")
+} else {
+  library("janitor")
+}
+
+if (!require("dplyr", character.only = TRUE)) {
+  install.packages("dplyr")
+  library("dplyr")
+} else {
+  library("dplyr")
+}
+
+if (!require("ragg", character.only = TRUE)) {
+  install.packages("ragg")
+  library("ragg")
+} else {
+  library("ragg")
+}
+
+if (!require("svglite", character.only = TRUE)) {
+  install.packages("svglite")
+  library("svglite")
+} else {
+  library("svglite")
+}
+
+```
+
+
+
+## QUESTION 01: Data Visualisation for Science Communication
+
+*Create a figure using the Palmer Penguin dataset that is correct but badly communicates the data. **Do not make a boxplot**.*
+
+*Use the following references to guide you:*
+
+-   [*https://www.nature.com/articles/533452a*](https://www.nature.com/articles/533452a){.uri}
+-   [*https://elifesciences.org/articles/16800*](https://elifesciences.org/articles/16800){.uri}
+
+*Note: Focus on visual elements rather than writing misleading text on it.*
+
+### a) Provide your figure here:
+
+```{r echo = FALSE, include = FALSE}
+#Load data
+head(penguins_raw)
+
+#Load the function definitons
+source("functions/cleaning_homework.R")
+
+
+## Clean data to make it computer-readable for the plot
+#Using functions defined in 'cleaning_homework.R' file
+
+#Call the function and check it has output the correct names
+penguins_clean_hw <- penguins_raw %>%
+    clean_column_names() %>%
+    shorten_species() %>%
+    remove_empty_columns_rows()
+
+names(penguins_clean_hw)
+
+```
+
+
+
+```{r bad figure code, echo=FALSE, warning = FALSE}
+
+# There is no need to provide the code for your bad figure, just use echo=FALSE so the code is hidden. Make sure your figure is visible after you knit it. 
+
+
+#Plot the figure
+ggplot(penguins_clean_hw, 
+       aes(x = culmen_length_mm, y = flipper_length_mm, colour = species)) +
+  geom_point() +
+  scale_color_manual(values = c("palegreen2","springgreen3","seagreen1")) +
+  geom_smooth(method = "lm", se = TRUE, linetype = "dashed", colour = "green") +
+  labs(x = "Culmen length (mm)", y = "Flipper length (mm)") +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  scale_y_continuous(limits = c(180, 240), breaks = seq(180, 235, by = 5.55))
+```
+
+### b) Write about how your design choices mislead the reader about the underlying data (200-300 words).
+
+*Include references.*
+
+My graph shows the relationship between body mass (g) and flipper length (mm), for 3 species of penguin. 
+
+One way that graphs badly communicate the data involves displaying as little information as possible. The lack of a legend on this graph does this, as there is no way to tell what the different colours that are representing the clustered pattern, relate to. We can only tell that a separation in the data exists. Similarly, the x axis has relatively few tick marks, which do not begin at the start of the axis. By adding more, the graph would more effectively communicate the results.
+
+Equally, the data cannot be easily interpreted, even if there were a legend, since the colours for each species and the trendline are very close shades of green. This makes it difficult to observe the fact that there is clustering, and makes it difficult to see the distibution they form along the x and y axis. In addition, the colour green does not provide for people who are colour blind, meaning this excludes certain readers from interpreting the results of the graph.
+
+The trendline which has been included may add confusion because it is describing a pattern that is: penguins with longer culmen tend to have longer flippers. This suggests a separate conclusion to the one we may draw about the continuous variables in relation to species type. Simpson's Paradox refers to a situation where we have plotted combined data which shows one trend, but have not included a third variable. The results therefore mask the effect of this variable on the trend plotted. Our trendline shows the relationship if we did not have this confounding factor: species type. However, since we have plotted it, and can see there is clustering between the species, species type appears to have an effect on the data. Therefore, the results are being badly communicated by the plot because they are showing two relationships, making interpretations of the plot harder.
+
+Finally, the choice of decimal values for the y axis makes it hard to read the data point values. Many of the points lie between the tick marks, and it will take time to calculate what these rough values would be.
+
+
+References:
+
+Wainer, H. (1984). How to Display Data Badly. The American Statistician, 38(2), 137–147. https://doi.org/10.2307/2683253
+
+[Simpson's Paradox Explained] https://statisticsbyjim.com/basics/simpsons-paradox/
+
+------------------------------------------------------------------------
+
+
+
+
+
+## QUESTION 2: Data Pipeline
+
+*Write a data analysis pipeline in your .rmd RMarkdown file. You should be aiming to write a clear explanation of the steps as well as clear code.*
+
+*Your code should include the steps practiced in the lab session:*
+
+-   *Load the data*
+
+-   *Appropriately clean the data*
+
+-   *Create an Exploratory Figure (**not a boxplot**)*
+
+-   *Save the figure*
+
+-   ***New**: Run a statistical test*
+
+-   ***New**: Create a Results Figure*
+
+-   *Save the figure*
+
+*An exploratory figure shows raw data, such as the distribution of the data. A results figure demonstrates the stats method chosen, and includes the results of the stats test.*
+
+*Between your code, communicate clearly what you are doing and why.*
+
+*Your text should include:*
+
+-   *Introduction*
+
+-   *Hypothesis*
+
+-   *Stats Method*
+
+-   *Results*
+
+-   *Discussion*
+
+-   *Conclusion*
+
+*You will be marked on the following:*
+
+### a) Your code for readability and functionality
+
+### b) Your figures for communication
+
+### c) Your text communication of your analysis
+
+*Below is a template you can use.*
+
+------------------------------------------------------------------------
+
+### Introduction
+
+The data set that I will be using for this analysis is 'Palmer penguins', and contains data on individuals from three species of penguin, called Adelie, Gentoo and Chinstrap penguins. This data includes measurements of each sampled individual's flippers, as well as a measurement of body mass.
+
+In this analysis, I will be looking at the association between body mass and flipper length, and investigating whether we see a difference in the relationship across the three species. A larger body mass for an individual may mean that they are able to support larger flippers, and so we may see this relationship forming. Equally, flipper length may affect the swimming ability of the penguins, and as could the body mass of the species; the amount of swimming a penguin does may depend on the species and the type of food they eat, and need to catch. We therefore may see a split in the data points, related to species type, since the different species have slightly different food types.
+
+
+
+### Hypotheses
+
+**Hypothesis 1:**
+
+Null Hypothesis (H0) = There is no significant relationship between the flipper length and body mass of penguins.
+
+Alternative Hypothesis = There is a significant relationship between flipper length and body mass of penguins.
+
+**Hypothesis 2:**
+
+Null Hypothesis (H0) = There is no significant difference between species in the relationship between flipper length and body mass.
+
+Alternative Hypothesis = The species of penguin can predict the relationship between flipper length and body mass.
+
+Therefore, we would expect each of the species to have different trendlines on the graph because the relationship between flipper length and body mass is different for each one.
+
+
+### Exploratory figure
+
+Before making any plots, we need to load the required packages and load the files which contain functions we will be calling. I have stored the functions I have created to clean and plot the data in separate files to this document, and we need to load these function definitions from those files here. 
+<br>
+We also need to save a copy of the raw data at this point, so we can refer back to it if any mistakes are made further down the line.
+
+I have created code at the beginning of the R markdown document to install the loaded packages, if required.
+<br>
+<br>
+
+**Loading the data:**
+```{r Loading packages, function definitions and data}
+#Load libraries needed. If/else statement at the start of the R markdown document can be run to download packages
+library(ggplot2)
+library(palmerpenguins)
+library(janitor)
+library(dplyr)
+library(ragg)
+library(svglite)
+
+#Load the function definitions
+source("functions/cleaning_homework.r")
+source("functions/plotting_homework.r")
+
+#Save the raw data before cleaning
+write.csv(penguins_raw, "data/penguins_raw_hw.csv")
+
+#Check the raw data output
+head(penguins_raw)
+```
+
+<br>
+<br>
+
+**Cleaning the data:**
+
+Following this and before beginning to plot the data, the data must be cleaned to make it consistent and computer-readable, and therefore easier to use in the code.
+
+The code I am using will put all the columns into lower case and snake case, as well as shorten the names of the species (making them easier to call in later code), and remove any empty columns (as we will not be able to use them for any analysis).
+
+```{r Cleaning data}
+#Use a pipe to clean the data
+penguins_clean_hw <- penguins_raw %>%
+    clean_column_names() %>%
+    shorten_species() %>%
+    remove_empty_columns_rows()
+
+#Check the clean data output
+names(penguins_clean_hw)
+
+#Save the clean data
+write.csv(penguins_clean_hw, "data/penguins_clean_hw.csv")
+```
+<br>
+<br>
+
+**Filtering the data for our analysis:**
+
+We want to filter the specific data that we are using for our analysis. This is so that we can select the specific columns we are using and remove any rows from them with NA values. 
+
+We have not filtered out all NAs from all columns before this point, since this might have removed some data points from the columns we are looking to analyse.
+
+```{r}
+penguins_clean_subset <- penguins_clean_hw %>%
+    subset_columns(c("body_mass_g", "flipper_length_mm", "species")) %>%
+    remove_NA()
+penguins_clean_subset
+```
+
+
+<br>
+<br>
+
+**Exploring the data**
+
+I want to observe the relationship between flipper length and body mass across the whole data set, before proceeding with any analysis. This allows me to visualise the distribution of the data and get an idea of any patterns formed. 
+<br>
+I have coloured the graph according to the species type, to explore whether we see a trend forming in this regard.
+
+```{r Data Exploration}
+#Making exploratory plot
+penguins_initial_plot <- plot_initial_fig(penguins_clean_subset)
+penguins_initial_plot
+```
+
+From the plot, we can see that the overall trend in the data is that with increased body mass, we see an increased flipper length. In terms of the association with species type, it appears, from observation alone, that different species have different ranges of flipper lengths and body masses; Adelie and Chinstrap penguins tend to have lower body masses and flipper lengths, compared with the Gentoo penguins. Overall there is a trend within each of the species, that as flipper length increases, so does body mass. However, it is difficult to tell from observation whether this is significant enough such that species type is able to predict the flipper length and body mass association.
+
+We can investigate these associations further using statistical methods to test the significance of the outputs.
+<br>
+<br>
+
+**Save the exploratory figure:**
+
+We want to save this figure to a separate file, to refer back to.
+
+```{r}
+save_initial_fig_png(penguins_clean_subset,
+                     "figures/exploratory_plot.png",
+                     size = 15, res = 300, scaling = 0.7)
+```
+
+
+### Statistical Methods
+
+I am going to run an ANCOVA test to test the significance of the relationship between the flipper length and body mass, and determine whether species has a significant influence on the relationship seen.
+<br>
+<br>
+
+First of all, I am going to check that the data we have meets the assumptions for an ANCOVA test. 
+
+The assumptions of an ANCOVA test are:
+- Measurements in each group are a random sample from their populations 
+- Variable (flipper length) is normally distributed in each population 
+- Variance is the same in all groups 
+- Linear relationship between the response variable and covariate
+
+I will assume that the data has been collected randomly, and will test the other assumptions, as below. The response variable we are testing is flipper length, and we are testing the amount of variation in this variable that is explained by species (a factor) and body mass (a covariate).
+<br>
+<br>
+
+First of all, I am testing the assumption of normal distribution.
+
+```{r Statistics - Testing normality assumption}
+# Make sure your code prints. 
+
+#Testing for normal distribution
+penguins_model_ANCOVA <- lm(flipper_length_mm ~ species * body_mass_g, data = penguins_clean_subset)
+
+plot(penguins_model_ANCOVA, which = 2, main = "Residuals vs. Fitted Values")
+```
+The data points on this Q-Q plot lie almost exactly along a straight line, with some minor variations either side. Therefore, this suggests that the data is normally distributed.
+<br>
+<br>
+
+I am now tesing for homogeneity of variance:
+
+```{r Statistics - Testing variance}
+#Testing that the variance is the same in all groups (homogeneity of variance)
+plot(penguins_model_ANCOVA, which = 3)
+```
+
+The spread of the data is relatively consistent across all groups, as we can observe that the data points are relatively evenly spread out across the horizontal axis. There is no funnel shape generated and there are no extreme outliers, so we can assume there is homogeneity of variance across the data.
+<br>
+<br>
+
+I am now testing for linearity between the response variable and covariate:
+
+```{r Statistics - Testing linearity}
+#Testing for linearity
+ggplot(data = penguins_clean_subset,
+       aes(x=body_mass_g, y=flipper_length_mm)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE, color = "blue")
+  
+```
+
+There appears to be a strong linear relationship between the response and explanatory variable.
+<br>
+<br>
+
+We can proceed with the statistical test without transforming the data since all 3 of these asssumptions have been met by the data.
+
+I will now run the ANCOVA test:
+
+```{r Statistical test}
+anova(penguins_model_ANCOVA)
+```
+
+The results from the ANCOVA show that the interaction between flipper length and body mass is significant (p<2e-16), and as is the interaction between species and body mass (p = 0.0195). Both of these p values are <0.05. 
+<br>
+Since the interaction between body mass, species and flipper length is significant, this means that the increase in body mass with flipper length can be predicted by species. Therefore overall, this suggests there is a significant relationship between flipper length and body mass, and this can be predicted by species.
+
+
+### Results & Discussion
+
+I am now going to plot my final results graph. Within this graph, I have used trendlines for each species. This allows me to show the significant relationship between species and the association between flipper length and body mass, as I have found in my ANCOVA statistical test.
+<br>
+We can observe on the graph that each of the trendlines are significantly different from each other.
+
+```{r Plotting Results}
+penguins_results_plot <- plot_results_fig(penguins_clean_subset)
+penguins_results_plot
+```
+<br>
+<br>
+
+**Save the results plot**
+
+I, again, want to save my plot, to provide a point to refer back to.
+
+```{r}
+save_results_fig_png(penguins_clean_subset,
+                     "figures/results_plot.png",
+                     size = 15, res = 300, scaling = 0.7)
+```
+
+
+
+### Conclusion
+
+Overall, we can see that there is a significant relationship between body mass and flipper length. This may be due to the fact that a larger bird is able to effectively manage larger flippers better and potentially that birds are able to develop flippers in proportion to their body size in order to best make use of their function. A larger body mass may also mean they can allocate more resources to the growth of larger flippers during growth stages. The relationship between body mass and flipper length does have a significant association with species type. We see on the results graph that the trend lines are significantly different from each other, and do not form parallel to each other, suggesting that there is a different relationship between flipper length and body mass in each species. Equally, overall, Gentoo species tend to have a higher range flipper lengths and body mass compared with the other two species. Different species may have different relationships between their flipper length and body mass as a result of adaptation to different niches. This could include adapting to hunting for food. Gentoo species tend to hunt larger prey like squid, alongside krill, while Chinstrap penguins hunt mainly krill and small fish, and Adelie penguins also hunt krill. Therefore, Gentoo penguins may require more body mass and larger flipper lengths to hunt this prey.
+
+[Pygoscelis antarcticus
+chinstrap penguin] https://animaldiversity.org/accounts/Pygoscelis_antarcticus/#:~:text=The%20Chinstrap%27s%20diet%20is%20quite,Barham%201996%3B%20Welch%201997).
+
+[Adelie penguin] https://www.wwf.org.uk/sites/default/files/2018-01/WWF_WIW_2017_Factsheet_AdeliePenguin%20FINAL.pdf
+
+[New study reveals what penguins eat] https://www.bas.ac.uk/media-post/new-study-reveals-what-penguins-eat/
+
+
+
+
+
+------------------------------------------------------------------------
+
+## QUESTION 3: Open Science
+
+### a) GitHub
+
+*Upload your RProject you created for **Question 2** and any files and subfolders used to GitHub. Do not include any identifiers such as your name. Make sure your GitHub repo is public.*
+
+*GitHub link:*
+
+*You will be marked on your repo organisation and readability.*
+
+### b) Share your repo with a partner, download, and try to run their data pipeline.
+
+*Partner's GitHub link:*
+
+*You **must** provide this so I can verify there is no plagiarism between you and your partner.*
+
+### c) Reflect on your experience running their code. (300-500 words)
+
+-   *What elements of your partner's code helped you to understand their data pipeline?*
+
+-   *Did it run? Did you need to fix anything?*
+
+-   *What suggestions would you make for improving their code to make it more understandable or reproducible, and why?*
+
+-   *If you needed to alter your partner's figure using their code, do you think that would be easy or difficult, and why?*
+
+### d) Reflect on your own code based on your experience with your partner's code and their review of yours. (300-500 words)
+
+-   *What improvements did they suggest, and do you agree?*
+
+-   *What did you learn about writing code for other people?*
